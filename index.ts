@@ -355,7 +355,12 @@ export default function generate(options: Options): Promise<void> {
 			}
 
 			// We can optionally output the main module if there's something to export.
-			if (options.main && options.main === (options.prefix + filenameToMid(sourceFile.fileName.slice(baseDir.length, -3)))) {
+			const expected = (
+				(options.prefix || '') + filenameToMid(sourceFile.fileName.slice(baseDir.length, -3))
+			)
+				.replace(/^\/+/, '')
+				.replace(/\.+$/, '');
+			if (options.main && options.main === expected) {
 				foundMain = true;
 				ts.forEachChild(sourceFile, function (node: ts.Node) {
 					mainExportDeclaration = mainExportDeclaration || isNodeKindExportDeclaration(node);
